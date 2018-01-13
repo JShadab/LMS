@@ -1,0 +1,146 @@
+Dependency Injection:
+Passing required data or parameter to the POJO classes through meta data (i.e. Configuration files, xml files, annotations) called Dependency Injection.
+Dependency Injection is a practice where objects are designed in a manner where they receive instances of the objects from other pieces of code, instead of constructing them internally. This means that any object implementing the interface which is required by the object can be substituted in without changing the code, which simplifies testing, and improves decoupling.
+
+Dependency Injection Types:
+
+Dependency injection is classified into three categories namely,
+1.	Setter Injection: 
+This is the most favored method of dependency injection in Spring.
+Dependencies are “set” in the objects through setter methods defined in a Spring configuration file.
+
+
+<----------------------------------------------------Setter DI for primitive value START---------------------------------------------------------------------------->
+
+XML apporoch-------->
+
+spring.xml
+--------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan base-package="org.shad" />
+
+	<bean id="test" class="org.shad.Test">
+		<property name="name" value="Shadab" />
+	</bean>
+</beans>
+
+Test.java
+-------------
+package org.shad;
+public class Test {
+
+	private String name;
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	public void sayHello() {
+		System.out.println("Hello " + name);
+	}
+}
+
+Main.java
+------------
+package org.shad;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Main {
+
+	public static void main(String[] args) {
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+
+		Test obj = (Test) context.getBean("test");
+		obj.sayHello();
+	}
+}
+Output
+-----------
+Hello Shadab
+
+Annotation apporoch-------->
+
+package org.shad;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+
+	@Bean(name = "test")
+	public Test getTest() {
+
+		Test test = new Test();
+		test.setName("Shadab");
+
+		return test;
+	}
+}
+
+Test.java
+-------------
+package org.shad;
+public class Test {
+
+	private String name;
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	public void sayHello() {
+		System.out.println("Hello " + name);
+	}
+}
+
+Main.java
+------------
+package org.shad;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class Main {
+	public static void main(String[] args) {
+
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+		Test obj = (Test) context.getBean("test");
+		obj.sayHello();
+	}
+}
+
+Output
+-----------
+Hello Shadab
+
+<----------------------------------------------------Setter DI for primitive value END---------------------------------------------------------------------------->
+
+<----------------------------------------------------Setter DI for refrence value START---------------------------------------------------------------------------->
+
+
+
+<----------------------------------------------------Setter DI for refrence value END---------------------------------------------------------------------------->
+
+2.	Constructor Injection: 
+The constructor arguments are injected during instance instantiation.
+
+3.	Interface-based Injection:
+This is not implemented in Spring currently.
+It’s a different type of DI that involves mapping items to inject to specific interfaces.
+
+
+
+
+
+Dependent class must have setter method or parameterized constructor
+
+1.	Setter.
+2.	Constructor
+3.	Overloaded constructor
+4.	Multi value constructor
